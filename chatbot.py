@@ -6,7 +6,6 @@ from prompts import get_initial_prompt, get_follow_up_prompt
 # Load environment variables from .env file
 load_dotenv()
 
-# Set the OpenAI API key
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
 class Chatbot:
@@ -16,17 +15,10 @@ class Chatbot:
 
     def get_response(self, customer_input):
         self.messages.append({"role": "user", "content": customer_input})
-
-        try:
-            response = openai.ChatCompletion.create(
-                model="gpt-4",
-                messages=self.messages
-            )
-            assistant_reply = response['choices'][0]['message']['content']
-            self.messages.append({"role": "assistant", "content": assistant_reply})
-            return assistant_reply
-        except Exception as e:
-            # Handle potential exceptions
-            print(f"Error occurred: {e}")
-            return "Sorry, I couldn't process your request at the moment."
-
+        response = openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=self.messages
+        )
+        assistant_reply = response['choices'][0]['message']['content']
+        self.messages.append({"role": "assistant", "content": assistant_reply})
+        return assistant_reply
