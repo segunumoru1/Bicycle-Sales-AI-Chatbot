@@ -1,6 +1,7 @@
 import streamlit as st
 from datetime import datetime
 from chatbot import Chatbot
+import time
 
 def main():
     # Set up page configuration
@@ -12,7 +13,7 @@ def main():
 
     chatbot = Chatbot()
 
-    # Maintain chat history
+    # Maintain chat history in session state
     if 'chat_history' not in st.session_state:
         st.session_state.chat_history = []
 
@@ -21,17 +22,22 @@ def main():
         st.session_state.chat_history = []
         st.success("Chat history cleared!")
 
-    # User input section
+    # User input section with loading spinner for a better UX
     with st.form(key='user_input_form'):
         user_input = st.text_input("Type your message here:")
         submit_button = st.form_submit_button(label="Send 🚀")
 
-    # Handle user input and chatbot response
     if submit_button and user_input:
-        response = chatbot.get_response(user_input)
-        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        st.session_state.chat_history.append({"role": "user", "text": user_input, "time": timestamp})
-        st.session_state.chat_history.append({"role": "assistant", "text": response, "time": timestamp})
+        with st.spinner("Assistant is typing..."):
+            # Get chatbot response
+            response = chatbot.get_response(user_input)
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+            # Append user input and chatbot response to chat history
+            st.session_state.chat_history.append({"role": "user", "text": user_input, "time": timestamp})
+            st.session_state.chat_history.append({"role": "assistant", "text": response, "time": timestamp})
+
+            st.success("Message sent!")
 
     # Display chat history in a scrollable container
     st.write("### Chat History")
