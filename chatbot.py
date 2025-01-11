@@ -11,7 +11,7 @@ api_key = os.getenv("OPENAI_API_KEY")
 if not api_key:
     raise ValueError("OPENAI_API_KEY environment variable is not set.")
 
-openai.api_key = api_key
+openai.api_key = os.getenv('OPENAI_API_KEY')
 
 class Chatbot:
     def __init__(self):
